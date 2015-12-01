@@ -15,6 +15,15 @@ SOURCES := $(shell find $(SRCDIR) -type f -name '*.$(SRCEXT)')
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 DEPS := $(OBJECTS:.o=.deps)
 
+# Check our platform and make sure we define the APPLE variable
+# and set up the right compiler flags and libraries
+PLATFORM = $(shell uname -s)
+ifeq ($(PLATFORM), Darwin)
+	CC = clang++
+	CFLAGS += -stdlib=libc++
+	LIBS = -lOpenCLIPP-C++ -lm -framework OpenCL
+endif
+
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
